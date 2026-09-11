@@ -2,20 +2,29 @@ using UnityEngine;
 using TMPro;
 public class Coin : MonoBehaviour
 {
-    private int coinCount = 0;
     [SerializeField] private TextMeshProUGUI coinText;
+    [SerializeField] private GayCheck gayCheck;
+    private float timeGay = 0f;
+    private float bdau = 0f;
     private void Start()
     {
         UpdateCoinText();
+    }
+    void Update()
+    {
+        timeGay += Time.deltaTime;
+        if(bdau > 0f && timeGay - bdau > 2f)
+        {
+            gayCheck.gameObject.SetActive(false);
+        }
     }
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.CompareTag("Player"))
         {
-            coinCount++;
-            Debug.Log("Total Coins: " + coinCount);
-            UpdateCoinText();
-            gameObject.SetActive(false);
+            gayCheck.gameObject.SetActive(true);
+            bdau = timeGay;
+            Debug.Log("I'm Gay");
         }
     }
     public void ResetCoin()
@@ -26,7 +35,7 @@ public class Coin : MonoBehaviour
     {
         if (coinText != null)
         {
-            coinText.text = "Coins: " + coinCount.ToString();
+            coinText.text = "I'm Gay";
         }
     }
 }

@@ -25,12 +25,11 @@ public class PlayerMovement : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         MoveAction = InputSystem.actions.FindAction("MoveAction");
         JumpAction = InputSystem.actions.FindAction("JumpAction");
-        if(coin != null)
-        {
-            coin.ResetCoin();
-        }
     }
-
+    /*void Awake()
+    {
+        coin.ResetCoin();
+    }*/
     void Update()
     {
         moveInput = MoveAction.ReadValue<Vector2>();

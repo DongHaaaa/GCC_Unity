@@ -13,8 +13,6 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float groundRadius = 0.2f;
     [SerializeField] private LayerMask groundLayer;
 
-    [Header("Coin Check")]
-    [SerializeField] private Coin coin;
     private Rigidbody2D rb;
     private bool isGrounded;
     private InputAction MoveAction;

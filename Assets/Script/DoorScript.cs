@@ -47,4 +47,8 @@ public class DoorScript : MonoBehaviour
             doorCoroutine = StartCoroutine(CloseDoor());
         }
     }
+    private void OnDestroy()
+    {
+        if(doorCoroutine != null) StopCoroutine(doorCoroutine);
+    }
 }

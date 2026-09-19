@@ -24,10 +24,6 @@ public class PlayerMovement : MonoBehaviour
         MoveAction = InputSystem.actions.FindAction("MoveAction");
         JumpAction = InputSystem.actions.FindAction("JumpAction");
     }
-    /*void Awake()
-    {
-        coin.ResetCoin();
-    }*/
     void Update()
     {
         moveInput = MoveAction.ReadValue<Vector2>();
@@ -35,6 +31,12 @@ public class PlayerMovement : MonoBehaviour
         if (JumpAction.WasPressedThisFrame() && isGrounded)
         {
             Jump();
+        }
+        if(transform.localScale.x > 0 && moveInput.x < 0 || transform.localScale.x < 0 && moveInput.x > 0)
+        {
+            Vector3 newScale = transform.localScale;
+            newScale.x *= -1;
+            transform.localScale = newScale;
         }
     }
     void FixedUpdate()

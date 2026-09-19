@@ -1,3 +1,5 @@
+
+
 using System.Collections;
 using UnityEngine;
 using TMPro;
@@ -19,7 +21,7 @@ public class EnemyTrigger : MonoBehaviour
     {
         if(collision.CompareTag("Player"))
         {
-            Debug.Log("Player đã chạm vào Enemy!");
+            Debug.Log("Player đã chạm Enemy!");
             ShowText();
         }
     }

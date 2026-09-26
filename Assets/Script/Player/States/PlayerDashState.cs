@@ -14,6 +14,8 @@ public class PlayerDashState : PlayerState
     {
         base.Enter();
 
+        player.Animator.SetBool("IsDashing", true);
+
         timer = player.DashDuration;
 
         float moveX = player.MoveInput.x;
@@ -56,6 +58,8 @@ public class PlayerDashState : PlayerState
     public override void Exit()
     {
         base.Exit();
+
+        player.Animator.SetBool("IsDashing", false);
         player.Movement.EndDash();
     }
 }

@@ -72,6 +72,10 @@ public class Player : MonoBehaviour
 
     void Update()
     {
+        if (Keyboard.current.hKey.wasPressedThisFrame)
+        {
+            TakeDamage(20);
+        }
         StateMachine.CurrentState.Update();
     }
 

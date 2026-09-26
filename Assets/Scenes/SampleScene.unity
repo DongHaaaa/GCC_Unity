@@ -392,7 +392,7 @@ Transform:
   m_GameObject: {fileID: 80359872}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -7.49, y: -3.32, z: 0}
+  m_LocalPosition: {x: -5.43, y: -3.59, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -414,6 +414,7 @@ MonoBehaviour:
   moveSpeed: 15
   jumpForce: 7
   maxSpeed: 7
+  dashSpeed: 18
   groundCheck: {fileID: 1633285767}
   groundRadius: 0.03
   groundLayer:
@@ -432,6 +433,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Player
   anim: {fileID: 80359879}
+  maxHealth: 100
+  hurtDuration: 0.3
+  dashDuration: 0.15
+  dashCooldown: 0.5
 --- !u!95 &80359879
 Animator:
   serializedVersion: 7

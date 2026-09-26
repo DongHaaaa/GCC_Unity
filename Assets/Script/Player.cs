@@ -43,23 +43,22 @@ public class Player : MonoBehaviour
             anim.SetBool("IsAttacking", true);
             Debug.Log("Attack Pressed");
         }
-        float Vy= rb.linearVelocity.y;
+        float Vy= rb.linearVelocityY;
         if(Vy < 0)
         {
-            anim.SetBool("IsFalling", true);
             anim.SetBool("IsJumping", false);
             anim.SetBool("OnGround", false);
+            anim.SetFloat("yVelocity", Vy);
         }
         else if(Vy > 0)
         {
             anim.SetBool("IsJumping", true);
-            anim.SetBool("IsFalling", false);
             anim.SetBool("OnGround", false);
+            anim.SetFloat("yVelocity", Vy);
         }
         else
         {
             anim.SetBool("IsJumping", false);
-            anim.SetBool("IsFalling", false);
             anim.SetBool("OnGround", true);
         }
     }

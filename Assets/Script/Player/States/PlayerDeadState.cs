@@ -13,5 +13,8 @@ public class PlayerDeadState : PlayerState
         player.Animator.SetBool("IsRunning", false);
         player.Animator.SetBool("IsJumping", false);
         player.Animator.SetBool("IsAttacking", false);
+        player.Animator.SetBool("IsDashing", false);
+        player.Animator.SetBool("IsHurt", false);
+        player.Animator.SetBool("IsDead", true);
     }
 }

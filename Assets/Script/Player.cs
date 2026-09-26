@@ -14,10 +14,16 @@ public class Player : MonoBehaviour
     public PlayerStateMachine StateMachine { get; private set; }
     public PlayerIdleState IdleState { get; private set; }
     public PlayerMoveState MoveState { get; private set; }
+    public PlayerJumpState JumpState { get; private set; }
+    public PlayerFallState FallState { get; private set; }
+    public PlayerAttackState AttackState { get; private set; }
 
     public PlayerMovement Movement { get; private set; }
     public Animator Animator => anim;
     public Vector2 MoveInput => MoveAction.ReadValue<Vector2>();
+    public bool JumpPressed => JumpAction.WasPressedThisFrame();
+    public bool AttackPressed => AttackAction.WasPressedThisFrame();
+    public float VerticalVelocity => rb.linearVelocityY;
 
     void Awake()
     {
@@ -26,8 +32,12 @@ public class Player : MonoBehaviour
         AttackAction = InputSystem.actions.FindAction("AttackAction");
 
         StateMachine = new PlayerStateMachine();
+
         IdleState = new PlayerIdleState(this, StateMachine);
         MoveState = new PlayerMoveState(this, StateMachine);
+        JumpState = new PlayerJumpState(this, StateMachine);
+        FallState = new PlayerFallState(this, StateMachine);
+        AttackState = new PlayerAttackState(this, StateMachine);
     }
 
     void Start()
@@ -41,47 +51,6 @@ public class Player : MonoBehaviour
     void Update()
     {
         StateMachine.CurrentState.Update();
-
-        if (JumpAction.WasPressedThisFrame())
-        {
-            Debug.Log("Jump Pressed");
-        }
-
-        if (JumpAction.IsPressed())
-        {
-            Debug.Log("Jump Hold");
-        }
-
-        if (JumpAction.WasReleasedThisFrame())
-        {
-            Debug.Log("Jump Release");
-        }
-
-        if (AttackAction.IsPressed())
-        {
-            anim.SetBool("IsAttacking", true);
-            Debug.Log("Attack Pressed");
-        }
-
-        float Vy = rb.linearVelocityY;
-
-        if (Vy < 0)
-        {
-            anim.SetBool("IsJumping", false);
-            anim.SetBool("OnGround", false);
-            anim.SetFloat("yVelocity", Vy);
-        }
-        else if (Vy > 0)
-        {
-            anim.SetBool("IsJumping", true);
-            anim.SetBool("OnGround", false);
-            anim.SetFloat("yVelocity", Vy);
-        }
-        else
-        {
-            anim.SetBool("IsJumping", false);
-            anim.SetBool("OnGround", true);
-        }
     }
 
     void FixedUpdate()
@@ -91,6 +60,9 @@ public class Player : MonoBehaviour
 
     public void OnAttackEnd()
     {
-        anim.SetBool("IsAttacking", false);
+        if (StateMachine.CurrentState == AttackState)
+        {
+            AttackState.FinishAttack();
+        }
     }
 }

@@ -1,3 +1,5 @@
+using UnityEngine;
+
 public class PlayerIdleState : PlayerState
 {
     public PlayerIdleState(Player player, PlayerStateMachine stateMachine)
@@ -8,20 +10,16 @@ public class PlayerIdleState : PlayerState
     public override void Enter()
     {
         base.Enter();
+        player.Animator.SetBool("IsRunning", false);
     }
 
     public override void Update()
     {
         base.Update();
-    }
 
-    public override void FixedUpdate()
-    {
-        base.FixedUpdate();
-    }
-
-    public override void Exit()
-    {
-        base.Exit();
+        if (Mathf.Abs(player.MoveInput.x) >= 0.01f)
+        {
+            stateMachine.ChangeState(player.MoveState);
+        }
     }
 }

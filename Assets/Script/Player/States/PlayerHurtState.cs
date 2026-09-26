@@ -2,8 +2,6 @@ using UnityEngine;
 
 public class PlayerHurtState : PlayerState
 {
-    private float timer;
-
     public PlayerHurtState(Player player, PlayerStateMachine stateMachine)
         : base(player, stateMachine)
     {
@@ -13,21 +11,20 @@ public class PlayerHurtState : PlayerState
     {
         base.Enter();
 
-        timer = player.HurtDuration;
         player.Movement.StopHorizontal();
         player.Animator.SetBool("IsRunning", false);
         player.Animator.SetBool("IsAttacking", false);
+        player.Animator.SetBool("IsHurt", true);
     }
 
-    public override void Update()
+    public override void Exit()
     {
-        base.Update();
+        base.Exit();
+        player.Animator.SetBool("IsHurt", false);
+    }
 
-        timer -= Time.deltaTime;
-
-        if (timer > 0f)
-            return;
-
+    public void FinishHurt()
+    {
         if (!player.Movement.IsGrounded)
         {
             stateMachine.ChangeState(player.FallState);

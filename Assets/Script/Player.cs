@@ -6,51 +6,71 @@ public class Player : MonoBehaviour
     InputAction MoveAction;
     InputAction JumpAction;
     InputAction AttackAction;
+
     [SerializeField] private Animator anim;
+
     private Rigidbody2D rb;
-    void Start()
-    {
-        rb = GetComponent<Rigidbody2D>();
-    }
+
+    public PlayerStateMachine StateMachine { get; private set; }
+    public PlayerIdleState IdleState { get; private set; }
+
     void Awake()
     {
         MoveAction = InputSystem.actions.FindAction("MoveAction");
         JumpAction = InputSystem.actions.FindAction("JumpAction");
         AttackAction = InputSystem.actions.FindAction("AttackAction");
+
+        StateMachine = new PlayerStateMachine();
+        IdleState = new PlayerIdleState(this, StateMachine);
     }
+
+    void Start()
+    {
+        rb = GetComponent<Rigidbody2D>();
+        StateMachine.Initialize(IdleState);
+    }
+
     void Update()
     {
+        StateMachine.CurrentState.Update();
+
         if (MoveAction.IsPressed())
         {
             Debug.Log(MoveAction.ReadValue<Vector2>());
             anim.SetBool(name: "IsRunning", true);
         }
         else anim.SetBool(name: "IsRunning", false);
+
         if (JumpAction.WasPressedThisFrame())
         {
             Debug.Log("Jump Pressed");
         }
+
         if (JumpAction.IsPressed())
         {
             Debug.Log("Jump Hold");
         }
+
         if (JumpAction.WasReleasedThisFrame())
         {
             Debug.Log("Jump Release");
         }
+
         if (AttackAction.IsPressed())
         {
             anim.SetBool("IsAttacking", true);
             Debug.Log("Attack Pressed");
         }
-        float Vy= rb.linearVelocityY;
-        if(Vy < 0)
+
+        float Vy = rb.linearVelocityY;
+
+        if (Vy < 0)
         {
             anim.SetBool("IsJumping", false);
             anim.SetBool("OnGround", false);
             anim.SetFloat("yVelocity", Vy);
         }
-        else if(Vy > 0)
+        else if (Vy > 0)
         {
             anim.SetBool("IsJumping", true);
             anim.SetBool("OnGround", false);
@@ -62,6 +82,12 @@ public class Player : MonoBehaviour
             anim.SetBool("OnGround", true);
         }
     }
+
+    void FixedUpdate()
+    {
+        StateMachine.CurrentState.FixedUpdate();
+    }
+
     public void OnAttackEnd()
     {
         anim.SetBool("IsAttacking", false);

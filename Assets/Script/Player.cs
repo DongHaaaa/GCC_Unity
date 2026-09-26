@@ -12,7 +12,6 @@ public class Player : MonoBehaviour
 
     [Header("Health Settings")]
     [SerializeField] private int maxHealth = 100;
-    [SerializeField] private float hurtDuration = 0.3f;
 
     [Header("Dash Settings")]
     [SerializeField] private float dashDuration = 0.15f;
@@ -39,7 +38,6 @@ public class Player : MonoBehaviour
     public bool DashPressed => DashAction.WasPressedThisFrame();
     public float VerticalVelocity => rb.linearVelocityY;
     public int CurrentHealth { get; private set; }
-    public float HurtDuration => hurtDuration;
     public float DashDuration => dashDuration;
     public bool CanDash => Time.time >= nextDashTime;
 
@@ -112,6 +110,14 @@ public class Player : MonoBehaviour
         if (StateMachine.CurrentState == AttackState)
         {
             AttackState.FinishAttack();
+        }
+    }
+
+    public void OnHurtEnd()
+    {
+        if (StateMachine.CurrentState == HurtState)
+        {
+            HurtState.FinishHurt();
         }
     }
 }

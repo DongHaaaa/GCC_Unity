@@ -25,6 +25,12 @@ public class PlayerJumpState : PlayerState
         player.Movement.Flip(moveX);
         player.Animator.SetFloat("yVelocity", player.VerticalVelocity);
 
+        if (player.DashPressed && player.CanDash)
+        {
+            stateMachine.ChangeState(player.DashState);
+            return;
+        }
+
         if (player.VerticalVelocity < 0f)
         {
             stateMachine.ChangeState(player.FallState);

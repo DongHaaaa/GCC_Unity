@@ -22,6 +22,12 @@ public class PlayerMoveState : PlayerState
         float moveX = player.MoveInput.x;
         player.Movement.Flip(moveX);
 
+        if (player.DashPressed && player.CanDash)
+        {
+            stateMachine.ChangeState(player.DashState);
+            return;
+        }
+
         if (player.AttackPressed)
         {
             stateMachine.ChangeState(player.AttackState);

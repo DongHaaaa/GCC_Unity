@@ -7,19 +7,26 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float jumpForce = 10f;
     [SerializeField] private float maxSpeed = 7f;
 
+    [Header("Dash Settings")]
+    [SerializeField] private float dashSpeed = 18f;
+
     [Header("GroundCheck Settings")]
     [SerializeField] private Transform groundCheck;
     [SerializeField] private float groundRadius = 0.2f;
     [SerializeField] private LayerMask groundLayer;
 
     private Rigidbody2D rb;
+    private float defaultGravityScale;
 
     public bool IsGrounded =>
         Physics2D.OverlapCircle(groundCheck.position, groundRadius, groundLayer);
 
+    public float FacingDirection => transform.localScale.x >= 0 ? 1f : -1f;
+
     void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
+        defaultGravityScale = rb.gravityScale;
     }
 
     public void Move(float moveX)
@@ -35,6 +42,32 @@ public class PlayerMovement : MonoBehaviour
     {
         rb.linearVelocity = new Vector2(rb.linearVelocity.x, 0);
         rb.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
+    }
+
+    public void BeginDash(float direction)
+    {
+        rb.gravityScale = 0f;
+        rb.linearVelocity = new Vector2(direction * dashSpeed, 0f);
+    }
+
+    public void ContinueDash(float direction)
+    {
+        rb.linearVelocity = new Vector2(direction * dashSpeed, 0f);
+    }
+
+    public void EndDash()
+    {
+        rb.gravityScale = defaultGravityScale;
+    }
+
+    public void StopHorizontal()
+    {
+        rb.linearVelocity = new Vector2(0f, rb.linearVelocity.y);
+    }
+
+    public void Stop()
+    {
+        rb.linearVelocity = Vector2.zero;
     }
 
     public void Flip(float moveX)

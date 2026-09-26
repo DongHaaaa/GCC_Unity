@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.InputSystem;
 
 public class PlayerMovement : MonoBehaviour
 {
@@ -14,23 +13,13 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private LayerMask groundLayer;
 
     private Rigidbody2D rb;
-    private bool isGrounded;
-    private InputAction JumpAction;
 
-    void Start()
+    public bool IsGrounded =>
+        Physics2D.OverlapCircle(groundCheck.position, groundRadius, groundLayer);
+
+    void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
-        JumpAction = InputSystem.actions.FindAction("JumpAction");
-    }
-
-    void Update()
-    {
-        isGrounded = Physics2D.OverlapCircle(groundCheck.position, groundRadius, groundLayer);
-
-        if (JumpAction.WasPressedThisFrame() && isGrounded)
-        {
-            Jump();
-        }
     }
 
     public void Move(float moveX)
@@ -42,6 +31,12 @@ public class PlayerMovement : MonoBehaviour
         rb.linearVelocity = new Vector2(clampedX, rb.linearVelocity.y);
     }
 
+    public void Jump()
+    {
+        rb.linearVelocity = new Vector2(rb.linearVelocity.x, 0);
+        rb.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
+    }
+
     public void Flip(float moveX)
     {
         if (transform.localScale.x > 0 && moveX < 0 ||
@@ -51,12 +46,6 @@ public class PlayerMovement : MonoBehaviour
             newScale.x *= -1;
             transform.localScale = newScale;
         }
-    }
-
-    private void Jump()
-    {
-        rb.linearVelocity = new Vector2(rb.linearVelocity.x, 0);
-        rb.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
     }
 
     private void OnDrawGizmos()

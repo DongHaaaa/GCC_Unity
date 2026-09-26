@@ -15,42 +15,50 @@ public class PlayerMovement : MonoBehaviour
 
     private Rigidbody2D rb;
     private bool isGrounded;
-    private InputAction MoveAction;
     private InputAction JumpAction;
-    private Vector2 moveInput;
+
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
-        MoveAction = InputSystem.actions.FindAction("MoveAction");
         JumpAction = InputSystem.actions.FindAction("JumpAction");
     }
+
     void Update()
     {
-        moveInput = MoveAction.ReadValue<Vector2>();
         isGrounded = Physics2D.OverlapCircle(groundCheck.position, groundRadius, groundLayer);
+
         if (JumpAction.WasPressedThisFrame() && isGrounded)
         {
             Jump();
         }
-        if(transform.localScale.x > 0 && moveInput.x < 0 || transform.localScale.x < 0 && moveInput.x > 0)
+    }
+
+    public void Move(float moveX)
+    {
+        Vector2 force = new Vector2(moveX * moveSpeed, 0);
+        rb.AddForce(force, ForceMode2D.Force);
+
+        float clampedX = Mathf.Clamp(rb.linearVelocity.x, -maxSpeed, maxSpeed);
+        rb.linearVelocity = new Vector2(clampedX, rb.linearVelocity.y);
+    }
+
+    public void Flip(float moveX)
+    {
+        if (transform.localScale.x > 0 && moveX < 0 ||
+            transform.localScale.x < 0 && moveX > 0)
         {
             Vector3 newScale = transform.localScale;
             newScale.x *= -1;
             transform.localScale = newScale;
         }
     }
-    void FixedUpdate()
-    {
-        Vector2 force = new Vector2(moveInput.x * moveSpeed, 0);
-        rb.AddForce(force, ForceMode2D.Force);
-        float clampedX = Mathf.Clamp(rb.linearVelocity.x, -maxSpeed, maxSpeed);
-        rb.linearVelocity = new Vector2(clampedX, rb.linearVelocity.y);
-    }
+
     private void Jump()
     {
         rb.linearVelocity = new Vector2(rb.linearVelocity.x, 0);
         rb.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
     }
+
     private void OnDrawGizmos()
     {
         if (groundCheck != null)

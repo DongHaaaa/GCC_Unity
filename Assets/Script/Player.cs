@@ -13,6 +13,11 @@ public class Player : MonoBehaviour
 
     public PlayerStateMachine StateMachine { get; private set; }
     public PlayerIdleState IdleState { get; private set; }
+    public PlayerMoveState MoveState { get; private set; }
+
+    public PlayerMovement Movement { get; private set; }
+    public Animator Animator => anim;
+    public Vector2 MoveInput => MoveAction.ReadValue<Vector2>();
 
     void Awake()
     {
@@ -22,24 +27,20 @@ public class Player : MonoBehaviour
 
         StateMachine = new PlayerStateMachine();
         IdleState = new PlayerIdleState(this, StateMachine);
+        MoveState = new PlayerMoveState(this, StateMachine);
     }
 
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
+        Movement = GetComponent<PlayerMovement>();
+
         StateMachine.Initialize(IdleState);
     }
 
     void Update()
     {
         StateMachine.CurrentState.Update();
-
-        if (MoveAction.IsPressed())
-        {
-            Debug.Log(MoveAction.ReadValue<Vector2>());
-            anim.SetBool(name: "IsRunning", true);
-        }
-        else anim.SetBool(name: "IsRunning", false);
 
         if (JumpAction.WasPressedThisFrame())
         {

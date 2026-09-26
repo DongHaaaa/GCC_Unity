@@ -19,6 +19,12 @@ public class PlayerIdleState : PlayerState
     {
         base.Update();
 
+        if (player.DashPressed && player.CanDash)
+        {
+            stateMachine.ChangeState(player.DashState);
+            return;
+        }
+
         if (player.AttackPressed)
         {
             stateMachine.ChangeState(player.AttackState);
